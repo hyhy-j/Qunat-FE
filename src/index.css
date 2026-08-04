@@ -1,0 +1,149 @@
+@import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: 'Pretendard', sans-serif;
+
+  --color-ink: #0A0D12;
+  --color-panel: #12161D;
+  --color-panel-elev: #171C25;
+  --color-line: #232A38;
+  --color-line-soft: #1A202B;
+  --color-text: #E7EAEE;
+  --color-text-dim: #8992A3;
+  --color-text-faint: #4E5666;
+  --color-accent: #F0B429;
+  --color-accent-dim: rgba(240, 180, 41, 0.12);
+  --color-rise: #FF5C5C;
+  --color-fall: #4C8DFF;
+  --color-header: #05070A;
+
+  /* 테마와 무관하게 항상 어두운 값 (accent 버튼 위 텍스트 등) */
+  --color-ink-fixed: #0A0D12;
+}
+
+/* ── 라이트 테마 오버라이드 ──
+   ink는 완전한 흰색(#FFFFFF)은 아니지만 그것과 거의 구분이 안 갈 만큼만
+   낮췄다. panel-elev(보조 표면)도 "회색 블록"으로 보이지 않도록
+   ink에 가깝게 두고, 대신 대부분 border를 같이 쓰므로 구분은 테두리가
+   맡는다. 카드(panel)의 입체감은 색 차이 대신 아래 그림자로 해결한다. */
+[data-theme='light'] {
+  --color-ink: #FAFAF9;
+  --color-panel: #FFFFFF;
+  --color-panel-elev: #F5F4F1;
+  --color-line: #E8E5DD;
+  --color-line-soft: #F1EFE9;
+  --color-text: #1C1B18;
+  --color-text-dim: #625E54;
+  --color-text-faint: #918C80;
+  --color-header: #FFFFFF;
+
+  /* 다크 배경 위에서 쓰던 저채도 틴트는 흰 배경에서 존재감이 사라지므로
+     라이트에서는 알파를 끌어올려 색이 눈에 띄도록 보정 */
+  --color-accent-dim: rgba(240, 180, 41, 0.2);
+}
+
+/* 다크에서는 panel이 ink보다 밝아서 저절로 입체감이 생기지만,
+   라이트에서는 panel(흰색)과 ink 차이만으론 부족해 옅은 그림자로 보완 */
+[data-theme='light'] .bg-panel {
+  box-shadow: 0 1px 2px rgba(30, 25, 15, 0.04), 0 2px 6px rgba(30, 25, 15, 0.05);
+}
+
+[data-theme='light'] .bg-rise\/\[0\.08\] {
+  background-color: rgba(255, 92, 92, 0.16);
+}
+[data-theme='light'] .bg-fall\/\[0\.08\] {
+  background-color: rgba(76, 141, 255, 0.16);
+}
+[data-theme='light'] .grid-tex {
+  background-image:
+    linear-gradient(rgba(240, 180, 41, 0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(240, 180, 41, 0.1) 1px, transparent 1px);
+}
+
+@layer base {
+  html, body, #root {
+    height: 100%;
+  }
+
+  body {
+    background: var(--color-ink);
+  }
+
+  button:not(:disabled) {
+    cursor: pointer;
+  }
+
+  input[type='range'] {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 4px;
+    border-radius: 2px;
+    outline: none;
+    cursor: pointer;
+  }
+  input[type='range']::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--color-accent);
+    border: 2px solid #0A0D12;
+    cursor: pointer;
+    box-shadow: 0 0 0 3px var(--color-accent-dim);
+  }
+  input[type='range']::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--color-accent);
+    border: 2px solid #0A0D12;
+    cursor: pointer;
+    box-shadow: 0 0 0 3px var(--color-accent-dim);
+  }
+}
+
+@layer components {
+  .mono {
+    font-family: 'Pretendard', sans-serif;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0;
+  }
+
+  .grid-tex {
+    background-image:
+      linear-gradient(rgba(240, 180, 41, 0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(240, 180, 41, 0.05) 1px, transparent 1px);
+    background-size: 22px 22px;
+  }
+
+  .animate-spin-slow { animation: spin 8s linear infinite; }
+  .animate-spin-rev { animation: spin-rev 5s linear infinite; }
+  .animate-pulse-glow { animation: pulse-glow 2.5s ease-in-out infinite; }
+  .animate-orbit { animation: orbit 3s linear infinite; transform-origin: 0 0; }
+  .animate-orbit2 { animation: orbit2 4.5s linear infinite; transform-origin: 0 0; }
+  .animate-login-orbit { animation: login-orbit 3s linear infinite; transform-origin: 0 0; }
+  .animate-login-orbit2 { animation: login-orbit2 4.5s linear infinite; transform-origin: 0 0; }
+
+  /* 인트로 로딩 아이콘 전용 (스텝별 스핀 속도) */
+  .rl-spin-1 { animation: spin 0.85s linear infinite; }
+  .rl-spin-2a { animation: spin 0.8s linear infinite; }
+  .rl-spin-2b { animation: spin-rev 1.15s linear infinite; }
+  .rl-spin-3-ring1 { animation: spin 0.95s linear infinite; }
+  .rl-spin-3-ring2 { animation: spin-rev 0.65s linear infinite; }
+  .rl-spin-3-core { animation: pulse-glow 0.9s ease-in-out infinite; }
+  .rl-spin-3-dot1 { animation: orbit 0.8s linear infinite; transform-origin: 0 0; }
+  .rl-spin-3-dot2 { animation: orbit2 1.1s linear infinite; transform-origin: 0 0; }
+
+  .acc-body { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
+  .acc-body.open { max-height: 600px; }
+}
+
+/* ── 로고 애니메이션 keyframes ── */
+@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+@keyframes spin-rev { from { transform: rotate(0deg); } to { transform: rotate(-360deg); } }
+@keyframes orbit { from { transform: rotate(0deg) translateX(18px); } to { transform: rotate(360deg) translateX(18px); } }
+@keyframes orbit2 { from { transform: rotate(180deg) translateX(22px); } to { transform: rotate(540deg) translateX(22px); } }
+@keyframes pulse-glow { 0%, 100% { opacity: 0.6; transform: scale(1); } 50% { opacity: 1; transform: scale(1.15); } }
+@keyframes login-orbit { from { transform: rotate(0deg) translateX(30px); } to { transform: rotate(360deg) translateX(30px); } }
+@keyframes login-orbit2 { from { transform: rotate(180deg) translateX(36px); } to { transform: rotate(540deg) translateX(36px); } }
