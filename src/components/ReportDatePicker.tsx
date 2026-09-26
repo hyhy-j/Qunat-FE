@@ -1,13 +1,12 @@
 import { useState } from 'react';
-import { LATEST_REPORT_DATE } from '../data/mock';
 
 interface ReportDatePickerProps {
   selected: string;
   onSelect: (date: string) => void;
+  reportDates?: Set<string>;
 }
 
 const WEEKDAYS = ['일', '월', '화', '수', '목', '금', '토'];
-const TODAY = LATEST_REPORT_DATE;
 
 function pad2(n: number) {
   return n.toString().padStart(2, '0');
@@ -17,7 +16,7 @@ function toDateStr(y: number, m: number, d: number) {
   return `${y}-${pad2(m + 1)}-${pad2(d)}`;
 }
 
-export default function ReportDatePicker({ selected, onSelect }: ReportDatePickerProps) {
+export default function ReportDatePicker({ selected, onSelect, reportDates }: ReportDatePickerProps) {
   const [open, setOpen] = useState(false);
   const [selY, selM] = selected.split('-').map(Number);
   const [viewYear, setViewYear] = useState(selY);
@@ -98,7 +97,7 @@ export default function ReportDatePicker({ selected, onSelect }: ReportDatePicke
                 if (day === null) return <div key={i} />;
                 const dateStr = toDateStr(viewYear, viewMonth, day);
                 const isSelected = dateStr === selected;
-                const isToday = dateStr === TODAY;
+                const hasReport = reportDates?.has(dateStr) ?? false;
                 return (
                   <button
                     key={i}
@@ -114,7 +113,7 @@ export default function ReportDatePicker({ selected, onSelect }: ReportDatePicke
                     }
                   >
                     {day}
-                    {isToday && !isSelected && (
+                    {hasReport && !isSelected && (
                       <span className="absolute bottom-1 h-1 w-1 rounded-full bg-accent" />
                     )}
                   </button>

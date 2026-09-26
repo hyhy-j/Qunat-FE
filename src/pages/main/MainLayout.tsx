@@ -1,7 +1,8 @@
-import { NavLink, Outlet } from 'react-router-dom';
+import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import LogoAnim from '../../components/LogoAnim';
 import ThemeToggle from '../../components/ThemeToggle';
 import { useAppState } from '../../state/AppContext';
+import { useAuth } from '../../state/AuthContext';
 
 const NAV_ITEMS = [
   {
@@ -60,7 +61,15 @@ const NAV_ITEMS = [
 
 export default function MainLayout() {
   const { profile } = useAppState();
+  const { nickname, logout } = useAuth();
+  const navigate = useNavigate();
   const roleText = profile ? `${profile.type} · ${profile.typeKr.replace(' 투자자', '')}` : 'NEUTRAL · 중립형';
+  const displayName = nickname ?? '사용자';
+
+  const handleLogout = async () => {
+    await logout();
+    navigate('/login');
+  };
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -75,10 +84,10 @@ export default function MainLayout() {
               key={item.to}
               to={item.to}
               className={({ isActive }) =>
-                'flex items-center gap-[7px] whitespace-nowrap rounded-md border-b-2 px-3.5 py-[7px] text-[13px] font-medium transition-colors ' +
+                'flex h-9 flex-shrink-0 items-center justify-center gap-[7px] whitespace-nowrap rounded-md px-3.5 text-[13px] font-medium leading-none transition-colors ' +
                 (isActive
-                  ? 'border-accent bg-accent-dim font-bold text-accent'
-                  : 'border-transparent text-text-faint hover:bg-line-soft hover:text-text-dim')
+                  ? 'bg-accent-dim font-bold text-accent'
+                  : 'text-text-faint hover:bg-line-soft hover:text-text-dim')
               }
             >
               <span className="flex h-3.5 w-3.5 flex-shrink-0 items-center justify-center">{item.icon}</span>
@@ -88,15 +97,18 @@ export default function MainLayout() {
         </nav>
         <div className="flex flex-shrink-0 items-center gap-3.5">
           <ThemeToggle />
-          <div className="flex items-center gap-[9px]">
-            <div className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-[5px] border border-line bg-panel-elev text-[10px] font-bold text-accent">
-              주원
-            </div>
-            <div>
-              <div className="text-[12.5px] font-semibold text-text">이주원</div>
-              <div className="mono text-[10.5px] text-text-faint">{roleText}</div>
-            </div>
+          <div className="flex items-center gap-2">
+            <span className="text-[12.5px] font-semibold text-text">{displayName}</span>
+            <span className="mono inline-flex items-center rounded border border-accent/35 bg-accent-dim px-[9px] py-1 text-[10px] font-bold tracking-[0.3px] text-accent">
+              {roleText}
+            </span>
           </div>
+          <button
+            onClick={handleLogout}
+            className="rounded-md border border-line px-2.5 py-1.5 text-[11px] font-semibold text-text-faint transition-colors hover:border-accent hover:text-accent"
+          >
+            로그아웃
+          </button>
         </div>
       </div>
       <div className="relative flex-1 bg-ink px-6 py-8 sm:px-[100px]">

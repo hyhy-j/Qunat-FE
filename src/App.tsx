@@ -1,6 +1,8 @@
 import { Navigate, Route, HashRouter, Routes } from 'react-router-dom';
 import { AppProvider } from './state/AppContext';
+import { AuthProvider } from './state/AuthContext';
 import { ThemeProvider } from './state/ThemeContext';
+import RequireAuth from './components/RequireAuth';
 import Login from './pages/auth/Login';
 import Signup from './pages/auth/Signup';
 import SurveyQ1 from './pages/auth/SurveyQ1';
@@ -19,31 +21,35 @@ import Assets from './pages/main/Assets';
 function App() {
   return (
     <ThemeProvider>
-      <AppProvider>
-        <HashRouter>
-          <Routes>
-            <Route path="/" element={<Navigate to="/login" replace />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<Signup />} />
-            <Route path="/survey/1" element={<SurveyQ1 />} />
-            <Route path="/survey/2" element={<SurveyQ2 />} />
-            <Route path="/survey/3" element={<SurveyQ3 />} />
-            <Route path="/survey/4" element={<SurveyQ4 />} />
-            <Route path="/survey/5" element={<SurveyQ5 />} />
-            <Route path="/done" element={<Done />} />
+      <AuthProvider>
+        <AppProvider>
+          <HashRouter>
+            <Routes>
+              <Route path="/" element={<Navigate to="/login" replace />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/signup" element={<Signup />} />
+              <Route path="/survey/1" element={<SurveyQ1 />} />
+              <Route path="/survey/2" element={<SurveyQ2 />} />
+              <Route path="/survey/3" element={<SurveyQ3 />} />
+              <Route path="/survey/4" element={<SurveyQ4 />} />
+              <Route path="/survey/5" element={<SurveyQ5 />} />
+              <Route path="/done" element={<Done />} />
 
-            <Route element={<MainLayout />}>
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/report" element={<Report />} />
-              <Route path="/portfolio" element={<Portfolio />} />
-              <Route path="/trade" element={<Trade />} />
-              <Route path="/assets" element={<Assets />} />
-            </Route>
+              <Route element={<RequireAuth />}>
+                <Route element={<MainLayout />}>
+                  <Route path="/dashboard" element={<Dashboard />} />
+                  <Route path="/report" element={<Report />} />
+                  <Route path="/portfolio" element={<Portfolio />} />
+                  <Route path="/trade" element={<Trade />} />
+                  <Route path="/assets" element={<Assets />} />
+                </Route>
+              </Route>
 
-            <Route path="*" element={<Navigate to="/login" replace />} />
-          </Routes>
-        </HashRouter>
-      </AppProvider>
+              <Route path="*" element={<Navigate to="/login" replace />} />
+            </Routes>
+          </HashRouter>
+        </AppProvider>
+      </AuthProvider>
     </ThemeProvider>
   );
 }

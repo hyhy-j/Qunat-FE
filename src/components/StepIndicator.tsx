@@ -34,7 +34,7 @@ export default function StepIndicator({ current }: StepIndicatorProps) {
           );
         })}
       </div>
-      {current > 0 && <InfoTip text={SCORE_INFO} />}
+      {current > 0 && <InfoTip text={SCORE_INFO} variant="white" size="md" />}
     </div>
   );
 }

@@ -1,6 +1,11 @@
 import { createContext, useContext, useMemo, useState, type ReactNode } from 'react';
 import type { ProfileResult, SurveyState } from '../types';
-import { computeProfile } from '../types';
+
+export interface AgentEvent {
+  time: string;
+  agent: 'AGENT1' | 'AGENT2' | 'AGENT3';
+  message: string;
+}
 
 interface AppContextValue {
   survey: SurveyState;
@@ -10,12 +15,15 @@ interface AppContextValue {
   setAmount: (amountTier: string, amountScore: number) => void;
   setInvestableAmount: (amount: number) => void;
   profile: ProfileResult | null;
-  finalizeProfile: () => ProfileResult;
+  setProfile: (profile: ProfileResult) => void;
   introShown: boolean;
   markIntroShown: () => void;
+  agentEvents: AgentEvent[];
+  pushAgentEvent: (message: string) => void;
 }
 
 const RISK_SCORES = [0, 0, 12, 25, 37, 50];
+const MAX_AGENT_EVENTS = 5;
 
 const initialSurvey: SurveyState = {
   goal: '',
@@ -30,10 +38,15 @@ const initialSurvey: SurveyState = {
 
 const AppContext = createContext<AppContextValue | null>(null);
 
+function formatTime(date: Date) {
+  return date.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit', hour12: false });
+}
+
 export function AppProvider({ children }: { children: ReactNode }) {
   const [survey, setSurvey] = useState<SurveyState>(initialSurvey);
-  const [profile, setProfile] = useState<ProfileResult | null>(null);
+  const [profile, setProfileState] = useState<ProfileResult | null>(null);
   const [introShown, setIntroShown] = useState(false);
+  const [agentEvents, setAgentEvents] = useState<AgentEvent[]>([]);
 
   const value = useMemo<AppContextValue>(
     () => ({
@@ -48,15 +61,17 @@ export function AppProvider({ children }: { children: ReactNode }) {
       setInvestableAmount: (investableAmount) =>
         setSurvey((s) => ({ ...s, investableAmount })),
       profile,
-      finalizeProfile: () => {
-        const result = computeProfile(survey);
-        setProfile(result);
-        return result;
-      },
+      setProfile: (result) => setProfileState(result),
       introShown,
       markIntroShown: () => setIntroShown(true),
+      agentEvents,
+      pushAgentEvent: (message) =>
+        setAgentEvents((events) => {
+          const entry: AgentEvent = { time: formatTime(new Date()), agent: 'AGENT3', message };
+          return [entry, ...events].slice(0, MAX_AGENT_EVENTS);
+        }),
     }),
-    [survey, profile, introShown],
+    [survey, profile, introShown, agentEvents],
   );
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

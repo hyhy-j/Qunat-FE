@@ -7,8 +7,8 @@ import { useAppState } from '../../state/AppContext';
 
 const OPTIONS = [
   { value: 'UNDER_1Y', main: '1년 미만', sub: '단기 투자 · 0점', score: 0 },
-  { value: '1Y_TO_3Y', main: '1~3년', sub: '중기 투자 · 10점', score: 10 },
-  { value: '3Y_TO_5Y', main: '3~5년', sub: '중장기 투자 · 20점', score: 20 },
+  { value: 'ONE_TO_3Y', main: '1~3년', sub: '중기 투자 · 10점', score: 10 },
+  { value: 'THREE_TO_5Y', main: '3~5년', sub: '중장기 투자 · 20점', score: 20 },
   { value: 'OVER_5Y', main: '5년 이상', sub: '장기 투자 · 30점', score: 30 },
 ];
 

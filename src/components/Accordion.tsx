@@ -1,7 +1,18 @@
 import { useState } from 'react';
-import type { PortfolioItem } from '../data/mock';
+import InfoTip from './InfoTip';
+import StockLogo from './StockLogo';
 
-type AccordionItem = PortfolioItem & { amount?: number };
+const AMOUNT_INFO =
+  '비중(%)에 총 투자금액을 곱해 계산한 목표 배분액이에요. 실제 매수 시에는 이 금액을 그 시점 주가로 나눈 정수 주 단위로 체결되며, 남는 금액은 현금으로 남습니다.';
+
+interface AccordionItem {
+  code: string;
+  name: string;
+  weightPct: number;
+  weightBar: number;
+  reasons: string[];
+  amount?: number;
+}
 
 export default function Accordion({
   items,
@@ -29,9 +40,7 @@ export default function Accordion({
               className="flex cursor-pointer items-center justify-between py-3"
             >
               <div className="flex items-center gap-2.5">
-                <div className="flex h-[38px] w-[38px] flex-shrink-0 items-center justify-center rounded-[5px] border border-line bg-panel-elev text-[10px] font-bold text-text-dim">
-                  {item.short}
-                </div>
+                <StockLogo code={item.code} name={item.name} />
                 <div>
                   <div className={'text-[13.5px] font-semibold ' + (isOpen ? 'text-accent' : 'text-text')}>
                     {item.name}
@@ -55,9 +64,10 @@ export default function Accordion({
             </div>
             <div className={'acc-body' + (isOpen ? ' open' : '')}>
               {item.amount !== undefined && (
-                <div className="mb-2.5 rounded-md bg-panel-elev px-3.5 py-2.5 text-[12.5px]">
-                  <span className="text-text-faint">투자 금액</span>{' '}
-                  <span className="mono font-bold text-accent">{item.amount.toLocaleString()}원</span>
+                <div className="mb-2.5 flex items-center rounded-md bg-panel-elev px-3.5 py-2.5 text-[12.5px]">
+                  <span className="text-text-faint">투자 금액</span>
+                  <InfoTip text={AMOUNT_INFO} placement="bottom" align="start" />
+                  <span className="mono ml-1.5 font-bold text-accent">{item.amount.toLocaleString()}원</span>
                 </div>
               )}
               {item.reasons.map((reason, i) => (
