@@ -13,7 +13,7 @@ import { profileResultFromType } from '../../types';
 export default function Login() {
   const navigate = useNavigate();
   const { setSession } = useAuth();
-  const { setProfile } = useAppState();
+  const { setProfile, syncAgentAccount } = useAppState();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -29,6 +29,7 @@ export default function Login() {
     try {
       const token = await login(email, password);
       setSession(token);
+      syncAgentAccount(email);
 
       try {
         const profile = await getProfile();

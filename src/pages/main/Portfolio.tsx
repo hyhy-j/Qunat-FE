@@ -78,7 +78,7 @@ export default function Portfolio() {
         <PageHeader eyebrow="PORTFOLIO" title="포트폴리오" subtitle="투자 성향과 시장 데이터를 반영한 맞춤형 포트폴리오를 확인해보세요" />
         <div className="flex flex-col items-center justify-center rounded-lg border border-line bg-panel px-6 py-20 text-center">
           <div className="mb-2 text-sm font-bold text-text">아직 생성된 포트폴리오가 없습니다</div>
-          <div className="text-xs text-text-faint">매주 월요일 자동으로 생성됩니다. 잠시 후 다시 확인해주세요.</div>
+          <div className="text-xs text-text-faint">매월 1일 자동으로 생성됩니다. 잠시 후 다시 확인해주세요.</div>
         </div>
       </div>
     );

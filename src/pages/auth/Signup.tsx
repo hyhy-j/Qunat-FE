@@ -6,10 +6,12 @@ import { BackButton, Field, FillButton } from '../../components/ui';
 import { ApiError } from '../../api/client';
 import { signup } from '../../api/auth';
 import { useAuth } from '../../state/AuthContext';
+import { useAppState } from '../../state/AppContext';
 
 export default function Signup() {
   const navigate = useNavigate();
   const { setSession } = useAuth();
+  const { syncAgentAccount } = useAppState();
   const [nickname, setNickname] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -31,6 +33,7 @@ export default function Signup() {
     try {
       const token = await signup(email, password, nickname);
       setSession(token);
+      syncAgentAccount(email);
       navigate('/survey/1');
     } catch (e) {
       setError(e instanceof ApiError ? e.message : '회원가입 중 오류가 발생했습니다.');

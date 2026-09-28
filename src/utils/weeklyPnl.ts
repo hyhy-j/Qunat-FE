@@ -19,23 +19,27 @@ function weekLabel(monday: Date): string {
 
 export function buildWeeklyPnl(history: OrderStatsHistoryPoint[]): WeeklyPnl[] {
   const sorted = [...history].sort((a, b) => (a.date < b.date ? -1 : 1));
-  const weeks = new Map<string, { monday: Date; first: number; last: number }>();
+  const weeks = new Map<string, { monday: Date; first: number; last: number; count: number }>();
 
   for (const point of sorted) {
     const monday = mondayOf(point.date);
     const key = monday.toISOString().slice(0, 10);
     const existing = weeks.get(key);
     if (!existing) {
-      weeks.set(key, { monday, first: point.totalAssets, last: point.totalAssets });
+      weeks.set(key, { monday, first: point.totalAssets, last: point.totalAssets, count: 1 });
     } else {
       existing.last = point.totalAssets;
+      existing.count += 1;
     }
   }
 
-  return Array.from(weeks.values()).map(({ monday, first, last }) => ({
-    week: weekLabel(monday),
-    pnl: last - first,
-  }));
+  // 데이터가 하루치뿐인 주(이번 주처럼 막 시작한 주)는 손익을 계산할 수 없어 0으로 왜곡되므로 제외한다.
+  return Array.from(weeks.values())
+    .filter(({ count }) => count >= 2)
+    .map(({ monday, first, last }) => ({
+      week: weekLabel(monday),
+      pnl: last - first,
+    }));
 }
 
 // 아래 차트 좌표계는 가로는 전부 %(0~100, 컨테이너 폭에 맞춰 자연스럽게 늘어남),

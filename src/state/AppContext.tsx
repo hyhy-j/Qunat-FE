@@ -1,4 +1,4 @@
-import { createContext, useContext, useMemo, useState, type ReactNode } from 'react';
+import { createContext, useContext, useMemo, useRef, useState, type ReactNode } from 'react';
 import type { ProfileResult, SurveyState } from '../types';
 
 export interface AgentEvent {
@@ -20,6 +20,7 @@ interface AppContextValue {
   markIntroShown: () => void;
   agentEvents: AgentEvent[];
   pushAgentEvent: (message: string) => void;
+  syncAgentAccount: (email: string) => void;
 }
 
 const RISK_SCORES = [0, 0, 12, 25, 37, 50];
@@ -47,6 +48,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [profile, setProfileState] = useState<ProfileResult | null>(null);
   const [introShown, setIntroShown] = useState(false);
   const [agentEvents, setAgentEvents] = useState<AgentEvent[]>([]);
+  const agentAccountEmail = useRef<string | null>(null);
 
   const value = useMemo<AppContextValue>(
     () => ({
@@ -70,6 +72,12 @@ export function AppProvider({ children }: { children: ReactNode }) {
           const entry: AgentEvent = { time: formatTime(new Date()), agent: 'AGENT3', message };
           return [entry, ...events].slice(0, MAX_AGENT_EVENTS);
         }),
+      syncAgentAccount: (email) => {
+        if (agentAccountEmail.current !== email) {
+          agentAccountEmail.current = email;
+          setAgentEvents([]);
+        }
+      },
     }),
     [survey, profile, introShown, agentEvents],
   );
